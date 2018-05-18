@@ -5,4 +5,4 @@
 
 require_relative './SpaceInvaders/window.rb'
 
-
+initializeWindow()

@@ -7,7 +7,6 @@ def setMenu()
   gameName.y = 120
   gameName.text = "Space Invaders"
 
-
   gameEdition = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/IndustrialRevolution-Regular.ttf"), size:35)
   gameEdition.x = 330
   gameEdition.y = 180
@@ -18,12 +17,12 @@ def setMenu()
   playButton.y = 270
   playButton.text = "Play"
 
-  playButton = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADECLASSIC.TTF"), size:50)
-  playButton.x = 233
-  playButton.y = 340
-  playButton.text = "Exit"
+  exitButton = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADECLASSIC.TTF"), size:50)
+  exitButton.x = 233
+  exitButton.y = 340
+  exitButton.text = "Exit"
 
-  return gameName, gameEdition, playButton
+  return gameName, gameEdition, playButton, exitButton
 end
 
 def copyImage(image)
@@ -42,56 +41,52 @@ def hideImage(image)
   image.y = windowH.to_s.to_i
 end
 
+def createBalloonIcon(width, height)
+  balloonIcon = Image.new(path: File.join(File.dirname(__FILE__), "../../data/images/balloon2.png"))
+  balloonIcon.width = width.to_i
+  balloonIcon.height = height.to_i
 
-set title: "Space Invaders - Balao Magico Edition"
-set heigth: 450, width:600
-gameName, gameEdition, playButton = setMenu()
-balloonIcon = Image.new(path: File.join(File.dirname(__FILE__), "../../data/images/balloon2.png"))
-balloonIcon.width = 40
-balloonIcon.height = 40
-balloonIcon2 = copyImage(balloonIcon)
-balloonIcon3 = copyImage(balloonIcon)
-balloonIcon4 = copyImage(balloonIcon)
-
-tick = 0
-update do
-  mouseX = get:mouse_x
-  mouseY = get:mouse_y
-  if mouseX.to_s.to_i >= 230 and mouseX.to_s.to_i <= 340 and mouseY.to_s.to_i >= 280 and mouseY.to_s.to_i <= 310
-    balloonIcon.x = 185
-    balloonIcon.y = 275
-    balloonIcon2.x = 343
-    balloonIcon2.y = 275
-
-    balloonIcon3.x = 600
-    balloonIcon3.y = 450
-    balloonIcon4.x = 600
-    balloonIcon4.y = 450
-  elsif mouseX.to_s.to_i >= 233 and mouseX.to_s.to_i <= 338 and mouseY.to_s.to_i >= 350 and mouseY.to_s.to_i <= 380
-    balloonIcon3.x = 187
-    balloonIcon3.y = 344
-    balloonIcon4.x = 340
-    balloonIcon4.y = 344
-
-    balloonIcon.x = 600
-    balloonIcon.y = 450
-    balloonIcon2.x = 600
-    balloonIcon2.y = 450
-  else
-    balloonIcon.x = 600
-    balloonIcon.y = 450
-    balloonIcon2.x = 600
-    balloonIcon2.y = 450
-    balloonIcon3.x = 600
-    balloonIcon3.y = 450
-    balloonIcon4.x = 600
-    balloonIcon4.y = 450
-  end
-  if tick % 30 == 0
-    gameEdition.color = 'random'
-    tick = 0
-  end
-  tick += 1
+  return balloonIcon
 end
 
-show
+def isMouseOver(item)
+  mouseX = get :mouse_x
+  mouseY = get :mouse_y
+
+  return item.contains?(mouseX.to_i, mouseY.to_i)
+end
+
+def initializeWindow()
+  set title: "Space Invaders - Balao Magico Edition"
+  set heigth: 450, width: 600
+  _, gameEdition, playButton, exitButton = setMenu()
+
+  balloonIcon = createBalloonIcon(40,40)
+  balloonIcon2 = createBalloonIcon(40,40)
+
+  tick = 0
+  update do
+    if tick % 30 == 0
+      gameEdition.color = 'random'
+      tick = 0
+    end
+    tick += 1
+
+    if isMouseOver(playButton)
+      balloonIcon.x = 185
+      balloonIcon.y = 275
+      balloonIcon2.x = 343
+      balloonIcon2.y = 275
+
+    elsif isMouseOver(exitButton)
+      balloonIcon.x = 187
+      balloonIcon.y = 344
+      balloonIcon2.x = 340
+      balloonIcon2.y = 344
+    else
+      hideImage(balloonIcon)
+      hideImage(balloonIcon2)
+    end
+  end
+  show
+end
