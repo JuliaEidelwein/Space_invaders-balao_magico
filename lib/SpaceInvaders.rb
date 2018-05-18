@@ -3,6 +3,6 @@
 #Other files
 
 
-require 'SpaceInvaders/window'
+require_relative './SpaceInvaders/window.rb'
 
 

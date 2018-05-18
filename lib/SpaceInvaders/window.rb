@@ -2,23 +2,23 @@ require 'ruby2d'
 
 def setMenu()
 	
-	gameName = Text.new(font: "fonts/ARCADE.TTF", size: 75)
+	gameName = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADE.TTF"), size: 75)
 	gameName.x = 35
 	gameName.y = 120
 	gameName.text = "Space Invaders"
 
 	
-	gameEdition = Text.new(font: "fonts/IndustrialRevolution-Regular.ttf", size:35)
+	gameEdition = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/IndustrialRevolution-Regular.ttf"), size:35)
 	gameEdition.x = 330
 	gameEdition.y = 180
 	gameEdition.text = "Balao Magico Edition"
 
-	playButton = Text.new(font: "fonts/ARCADECLASSIC.TTF", size:50)
+	playButton = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADECLASSIC.TTF"), size:50)
 	playButton.x = 230
 	playButton.y = 270
 	playButton.text = "Play"
 
-	playButton = Text.new(font: "fonts/ARCADECLASSIC.TTF", size:50)
+	playButton = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADECLASSIC.TTF"), size:50)
 	playButton.x = 233
 	playButton.y = 340
 	playButton.text = "Exit"
@@ -46,7 +46,7 @@ end
 set title: "Space Invaders - Balao Magico Edition"
 set heigth: 450, width:600
 gameName, gameEdition, playButton = setMenu()
-balloonIcon = Image.new(path: "images/balloon2.png")
+balloonIcon = Image.new(path: File.join(File.dirname(__FILE__), "../../data/images/balloon2.png"))
 balloonIcon.width = 40
 balloonIcon.height = 40
 balloonIcon2 = copyImage(balloonIcon)
