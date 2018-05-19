@@ -8,7 +8,7 @@ class Player < Ship
     @x = x
     @y = y
     @speed = speed
-    @image = Image.new(path: path, height: 75, width: 70, x: x, y: y)
+    @image = Image.new(path: path, height: 70, width: 60, x: x, y: y)
   end
 
 

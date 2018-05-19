@@ -1,7 +1,9 @@
-require_relative './ship.rb'
-class Invader < Ship
+require_relative './enemy.rb'
+class Invader < Enemy
 
   @@invaderDirection = "Right"
+  @@timeToApproach = false
+  
 
   def initialize(x, y, speed = 10, path)
     @x = x
@@ -10,44 +12,40 @@ class Invader < Ship
     @image = Image.new(path: path, height: 50, width: 45, x: x, y: y)
   end
 
-  def insideScreen()
-    #screenW = get:width
-    screenW = 600
-    return ((@x + 45) < screenW and @x > 0) ? true : false
+  def timeToApproach= (value)
+    @@timeToApproach = value
   end
 
-  def insideScreen(delta)
-    #screenW = get:width
-    screenW = 600
-    return ((@x + 45 + delta) < screenW and (@x - delta) > 0) ? true : false
+  def moveDown()
+    @y = @y + 10
+    @image.y = @y
+    #@@timeToApproach = false
   end
 
   def decideDirection()
     if @@invaderDirection == "Right"
       if !insideScreen(@speed)
         @@invaderDirection = "Left"
+        @@timeToApproach = true
       end
     elsif @@invaderDirection == "Left"
       if !insideScreen(@speed)
         @@invaderDirection = "Right"
+        @@timeToApproach = true
       end 
-    end   
-  end
-  
-  def moveRight(distance)
-    @x = @x + distance
-    @image.x = @x
-  end
-
-  def moveLeft(distance)
-    @x = @x - distance
-    @image.x = @x
+    end
   end
 
   def move()
     if @@invaderDirection == "Right"
+      if @@timeToApproach
+        moveDown
+      end
       moveRight(@speed)
     else
+      if @@timeToApproach
+        moveDown
+      end
       moveLeft(@speed)
     end
   end

@@ -67,6 +67,7 @@ update do
     enemies.each do |enemy|
       enemy.move
     end
+    enemies[0].timeToApproach = false
   end
 end
 show

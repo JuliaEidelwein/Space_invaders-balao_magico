@@ -46,7 +46,7 @@ end
 
 
 def setGameScreen()
-  player = Player.new(290, 400, 5, File.join(File.dirname(__FILE__), "../../data/images/balloon.png"))
+  player = Player.new(290, 405, 5, File.join(File.dirname(__FILE__), "../../data/images/balloon.png"))
   enemies = Array.new(24)
   for i in 0..23
     if i < 8

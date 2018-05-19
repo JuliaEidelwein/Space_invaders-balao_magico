@@ -1,5 +1,5 @@
 require_relative './invader.rb'
-class MasterInvader < Invader
+class MasterInvader < Enemy
   @shield = true
   
   def move()
