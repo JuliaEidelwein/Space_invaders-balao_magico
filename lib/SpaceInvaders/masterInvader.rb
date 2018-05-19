@@ -1,0 +1,3 @@
+class MasterInvader < Ship
+
+end
