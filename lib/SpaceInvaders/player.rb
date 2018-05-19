@@ -46,7 +46,12 @@ class Player < Ship
     end
   end
 
-  def shoot()
-    raise "Shoot must be implemented"
+  def shoot
+    if $playerMove == "space"
+      shot = Bullet.new(@x,@y)
+      while shot.y_position > 0 do
+        shot.move(0.1)
+      end
+    end
   end
 end
