@@ -36,7 +36,7 @@ def setMenu()
 end
 
 def hide(object)
-  windowW = get:width
+  windowW = get :width
   object.x = windowW
   return object
 end
@@ -44,6 +44,7 @@ end
 def hideMenu(title, edition, play, exit, balloon1, balloon2)
   return hide(title), hide(edition), hide(play), hide(exit), hide(balloon1), hide(balloon2)
 end
+
 
 def setGameScreen()
   player = Player.new(290, 400, 5, File.join(File.dirname(__FILE__), "../../data/images/balloon.png"))
@@ -200,3 +201,4 @@ def initializeWindow()
   end
   show
 end
+
