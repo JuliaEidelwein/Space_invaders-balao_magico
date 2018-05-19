@@ -60,6 +60,7 @@ update do
     @gameStatus = "Playing"
   elsif @gameStatus == "Playing"
     player.move
+    player.shoot
     $playerMove = "None"
     leftEnemy, rightEnemy = borderEnemies(enemies)
     enemies[leftEnemy].decideDirection()

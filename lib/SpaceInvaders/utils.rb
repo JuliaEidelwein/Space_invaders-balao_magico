@@ -124,6 +124,8 @@ on :key_down do |e|
     $playerMove = "Left"
   elsif key.to_s == "right"
     $playerMove = "Right"
+  elsif e.key == "space"
+    $playerMove = "space"
   else
     $playerMove = "None"
   end
@@ -135,6 +137,8 @@ on :key_held do |e|
     $playerMove = "Left"
   elsif key.to_s == "right"
     $playerMove = "Right"
+  elsif e.key == "space"
+    $playerMove = "space"
   else
     $playerMove = "None"
   end
