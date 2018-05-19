@@ -22,7 +22,9 @@ def setMenu()
   exitButton.y = 340
   exitButton.text = "Exit"
 
-  return gameName, gameEdition, playButton, exitButton
+  playButtonSound = Music.new(File.join(File.dirname(__FILE__), "../../data/sounds/startSound.mp3"))
+
+  return gameName, gameEdition, playButton, exitButton, playButtonSound
 end
 
 def copyImage(image)
@@ -59,12 +61,13 @@ end
 def initializeWindow()
   set title: "Space Invaders - Balao Magico Edition"
   set heigth: 450, width: 600
-  _, gameEdition, playButton, exitButton = setMenu()
+  _, gameEdition, playButton, exitButton, playButtonSound = setMenu()
 
   balloonIcon = createBalloonIcon(40,40)
   balloonIcon2 = createBalloonIcon(40,40)
 
   tick = 0
+  wasMouseOver = false
   update do
     if tick % 30 == 0
       gameEdition.color = 'random'
@@ -77,7 +80,9 @@ def initializeWindow()
       balloonIcon.y = 275
       balloonIcon2.x = 343
       balloonIcon2.y = 275
-
+      if !wasMouseOver
+        playButtonSound.play
+      end
     elsif isMouseOver(exitButton)
       balloonIcon.x = 187
       balloonIcon.y = 344
@@ -86,7 +91,9 @@ def initializeWindow()
     else
       hideImage(balloonIcon)
       hideImage(balloonIcon2)
+      playButtonSound.stop
     end
+    wasMouseOver = isMouseOver(playButton)
   end
   show
 end
