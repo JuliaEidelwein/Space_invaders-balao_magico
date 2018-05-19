@@ -58,10 +58,18 @@ def isMouseOver(item)
   return item.contains?(mouseX.to_i, mouseY.to_i)
 end
 
+on :mouse_down do |e|
+  if isMouseOver(@playButton)
+    puts "Mouse down"
+  elsif isMouseOver(@exitButton)
+    close
+  end
+end
+
 def initializeWindow()
   set title: "Space Invaders - Balao Magico Edition"
   set heigth: 450, width: 600
-  _, gameEdition, playButton, exitButton, playButtonSound = setMenu()
+  _, gameEdition, @playButton, @exitButton, playButtonSound = setMenu()
 
   balloonIcon = createBalloonIcon(40,40)
   balloonIcon2 = createBalloonIcon(40,40)
@@ -75,7 +83,7 @@ def initializeWindow()
     end
     tick += 1
 
-    if isMouseOver(playButton)
+    if isMouseOver(@playButton)
       balloonIcon.x = 185
       balloonIcon.y = 275
       balloonIcon2.x = 343
@@ -83,7 +91,7 @@ def initializeWindow()
       if !wasMouseOver
         playButtonSound.play
       end
-    elsif isMouseOver(exitButton)
+    elsif isMouseOver(@exitButton)
       balloonIcon.x = 187
       balloonIcon.y = 344
       balloonIcon2.x = 340
@@ -93,7 +101,7 @@ def initializeWindow()
       hideImage(balloonIcon2)
       playButtonSound.stop
     end
-    wasMouseOver = isMouseOver(playButton)
+    wasMouseOver = isMouseOver(@playButton)
   end
   show
 end
