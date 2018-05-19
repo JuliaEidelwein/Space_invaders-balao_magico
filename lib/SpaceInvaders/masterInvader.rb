@@ -1,4 +1,4 @@
-require_relative './invader.rb'
+require_relative './enemy.rb'
 class MasterInvader < Enemy
   @shield = true
   

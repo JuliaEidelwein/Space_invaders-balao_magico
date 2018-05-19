@@ -5,6 +5,7 @@
 
 require_relative './SpaceInvaders/utils.rb'
 require_relative './SpaceInvaders/masterInvader.rb'
+require_relative './SpaceInvaders/invader.rb'
 require_relative './SpaceInvaders/moveable.rb'
 require_relative './SpaceInvaders/bullet.rb'
 require_relative './SpaceInvaders/player.rb'
@@ -12,7 +13,9 @@ require_relative './SpaceInvaders/player.rb'
 
 
 set title: "Space Invaders - Balao Magico Edition"
-set heigth: 450, width: 600
+$windowH = 450
+$windowW = 600
+set heigth: $windowH, width: $windowW
 
 gameName, gameEdition, @playButton, @exitButton, playButtonSound = setMenu()
 
@@ -37,7 +40,7 @@ update do
     if isMouseOver(@playButton)
       balloonIcon.x = 185
       balloonIcon.y = 275
-      balloonIcon2.x = 343
+      balloonIcon2.x = 345
       balloonIcon2.y = 275
       if !wasMouseOver
         playButtonSound.play
@@ -45,11 +48,11 @@ update do
     elsif isMouseOver(@exitButton)
       balloonIcon.x = 187
       balloonIcon.y = 344
-      balloonIcon2.x = 340
+      balloonIcon2.x = 344
       balloonIcon2.y = 344
     else
-      hideImage(balloonIcon)
-      hideImage(balloonIcon2)
+      hide(balloonIcon)
+      hide(balloonIcon2)
       playButtonSound.stop
     end
     wasMouseOver = isMouseOver(@playButton)

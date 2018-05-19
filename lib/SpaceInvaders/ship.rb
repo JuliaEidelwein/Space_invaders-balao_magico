@@ -1,4 +1,6 @@
 require 'ruby2d'
+
+# Emulated Abstract Class 
 class Ship
   
   attr_accessor :x, :y, :speed, :image  
