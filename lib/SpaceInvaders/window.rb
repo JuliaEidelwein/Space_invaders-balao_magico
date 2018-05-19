@@ -1,5 +1,13 @@
 require 'ruby2d'
 
+
+require_relative './masterInvader.rb'
+require_relative './moveable.rb'
+require_relative './bullet.rb'
+require_relative './player.rb'
+
+
+
 def setMenu()
 
   gameName = Text.new(font: File.join(File.dirname(__FILE__), "../../data/fonts/ARCADE.TTF"), size: 75)
@@ -27,6 +35,36 @@ def setMenu()
   return gameName, gameEdition, playButton, exitButton, playButtonSound
 end
 
+def hide(object)
+  windowW = get:width
+  object.x = windowW
+  return object
+end
+
+def hideMenu(title, edition, play, exit, balloon1, balloon2)
+  return hide(title), hide(edition), hide(play), hide(exit), hide(balloon1), hide(balloon2)
+end
+
+def setGameScreen()
+  player = Player.new(290, 400, 5, File.join(File.dirname(__FILE__), "../../data/images/balloon.png"))
+  enemies = Array.new(24)
+  for i in 0..23
+    if i < 8
+      enemies[i] = Invader.new((20 + i*46), 20, 1, File.join(File.dirname(__FILE__), "../../data/images/balloon5.png"))
+    elsif i >=8 and i < 16
+      enemies[i] = Invader.new((20 + (i-8)*46), 75, 1, File.join(File.dirname(__FILE__), "../../data/images/balloon7.png"))
+    else
+      enemies[i] = Invader.new((20 + (i-16)*46), 130, 1, File.join(File.dirname(__FILE__), "../../data/images/balloon13.png"))
+    end
+  end
+  gameMusic = Music.new(File.join(File.dirname(__FILE__), "../../data/sounds/gameMusic.mp3"))
+  gameMusic.loop = true
+  gameMusic.play
+
+
+  return player, enemies, gameMusic
+end
+
 def copyImage(image)
   newImage = Image.new(path: image.path)
   newImage.width = image.width
@@ -37,14 +75,14 @@ def copyImage(image)
 end
 
 def hideImage(image)
-  windowH = get:heigt
+  windowH = get:height
   windowW = get:width
   image.x = windowW.to_s.to_i
   image.y = windowH.to_s.to_i
 end
 
 def createBalloonIcon(width, height)
-  balloonIcon = Image.new(path: File.join(File.dirname(__FILE__), "../../data/images/balloon2.png"))
+  balloonIcon = Image.new(path: File.join(File.dirname(__FILE__), "../../data/images/balloon.png"))
   balloonIcon.width = width.to_i
   balloonIcon.height = height.to_i
 
@@ -58,50 +96,107 @@ def isMouseOver(item)
   return item.contains?(mouseX.to_i, mouseY.to_i)
 end
 
+def borderEnemies(enemies)
+  leftEnemy = 0
+  rightEnemy = 0
+  enemies.each_with_index do |enemy, index|
+    if enemies[leftEnemy].x > enemy.x
+      leftEnemy = index
+    end
+    if enemies[rightEnemy].x < enemy.x
+      rightEnemy = index
+    end
+  end
+  return leftEnemy, rightEnemy
+end
+
 on :mouse_down do |e|
   if isMouseOver(@playButton)
-    puts "Mouse down"
+    @gameStatus = "PreparingToGame"
   elsif isMouseOver(@exitButton)
     close
+  end
+end
+
+on :key_down do |e|
+  key = e.key
+  if key.to_s == "left"
+    $playerMove = "Left"
+  elsif key.to_s == "right"
+    $playerMove = "Right"
+  else
+    $playerMove = "None"
+  end
+end
+
+on :key_held do |e|
+  key = e.key
+  if key.to_s == "left"
+    $playerMove = "Left"
+  elsif key.to_s == "right"
+    $playerMove = "Right"
+  else
+    $playerMove = "None"
   end
 end
 
 def initializeWindow()
   set title: "Space Invaders - Balao Magico Edition"
   set heigth: 450, width: 600
-  _, gameEdition, @playButton, @exitButton, playButtonSound = setMenu()
+  gameName, gameEdition, @playButton, @exitButton, playButtonSound = setMenu()
 
   balloonIcon = createBalloonIcon(40,40)
   balloonIcon2 = createBalloonIcon(40,40)
 
+  gameMusic = nil
+  player = nil
+  enemies = nil
+
+  @gameStatus = "Menu"
   tick = 0
   wasMouseOver = false
   update do
-    if tick % 30 == 0
-      gameEdition.color = 'random'
-      tick = 0
-    end
-    tick += 1
-
-    if isMouseOver(@playButton)
-      balloonIcon.x = 185
-      balloonIcon.y = 275
-      balloonIcon2.x = 343
-      balloonIcon2.y = 275
-      if !wasMouseOver
-        playButtonSound.play
+    if @gameStatus == "Menu"
+      if tick % 30 == 0
+        gameEdition.color = 'random'
+        tick = 0
       end
-    elsif isMouseOver(@exitButton)
-      balloonIcon.x = 187
-      balloonIcon.y = 344
-      balloonIcon2.x = 340
-      balloonIcon2.y = 344
-    else
-      hideImage(balloonIcon)
-      hideImage(balloonIcon2)
+      tick += 1
+
+      if isMouseOver(@playButton)
+        balloonIcon.x = 185
+        balloonIcon.y = 275
+        balloonIcon2.x = 343
+        balloonIcon2.y = 275
+        if !wasMouseOver
+          playButtonSound.play
+        end
+      elsif isMouseOver(@exitButton)
+        balloonIcon.x = 187
+        balloonIcon.y = 344
+        balloonIcon2.x = 340
+        balloonIcon2.y = 344
+      else
+        hideImage(balloonIcon)
+        hideImage(balloonIcon2)
+        playButtonSound.stop
+      end
+      wasMouseOver = isMouseOver(@playButton)
+    elsif @gameStatus == "PreparingToGame"
       playButtonSound.stop
+      player, enemies, gameMusic = setGameScreen()
+      hideMenu(gameName, gameEdition, @playButton, @exitButton, balloonIcon, balloonIcon2)
+      @gameStatus = "Playing"
+    elsif @gameStatus == "Playing"     
+      player.move
+      $playerMove = "None"
+      leftEnemy, rightEnemy = borderEnemies(enemies)
+      enemies[leftEnemy].decideDirection()
+      enemies[rightEnemy].decideDirection()
+      enemies.each do |enemy|
+        enemy.move
+      end
     end
-    wasMouseOver = isMouseOver(@playButton)
   end
   show
 end
