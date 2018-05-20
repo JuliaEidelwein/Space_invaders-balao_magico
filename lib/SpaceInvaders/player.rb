@@ -2,12 +2,15 @@ require 'ruby2d'
 require_relative './ship.rb'
 
 class Player < Ship
+   
+  attr_accessor :score 
 
   def initialize(x, y, speed = 10, path)
     @x = x
     @y = y
     @speed = speed
     @image = Image.new(path: path, height: 70, width: 60, x: x, y: y)
+    @score = 0
   end
 
   def moveRight(distance)
@@ -43,7 +46,7 @@ class Player < Ship
 
   def shoot
     if $playerShoot
-      shot = Bullet.new((@x + (@image.width)/2), @y)
+      shot = Bullet.new((@x + (@image.width)/2), @y - 3, "Player")
       $playerShoot = false
       return shot
     end

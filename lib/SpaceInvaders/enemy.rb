@@ -54,8 +54,22 @@ class Enemy < Ship
     end
   end
 
-  def shoot()
-    raise "Shoot must be implemented"
+  def shouldShoot(probability)
+    srand
+    r = rand(10000)
+    if r < probability
+      return true
+    else 
+      return false
+    end
+  end
+
+  def shoot
+    if shouldShoot(10 + 2*$level)
+      shot = Bullet.new((@x + (@image.width)/2), (@y + @image.height), "Enemy")
+      return shot
+    end
+    return nil
   end
 
 end

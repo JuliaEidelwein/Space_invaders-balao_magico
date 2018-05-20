@@ -18,7 +18,7 @@ class Invader < Enemy
   end
 
   def moveDown()
-    @y = @y + 10
+    @y = @y + 10 + $level
     @image.y = @y
   end
 
