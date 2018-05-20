@@ -30,7 +30,8 @@ class Bullet
       if @shooter == "Player"
         @y = @y - @speed
         @shape.y = @y
-      elsif @shooter == "Enemy"
+      #elsif @shooter == "Enemy"
+      elsif @shooter == "Invader" or @shooter == "MasterInvader"
         @y = @y + @speed/2
         @shape.y = @y
       end

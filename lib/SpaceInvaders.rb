@@ -34,6 +34,10 @@ gameOverText = nil
 finalScoreText = nil
 @returnButton = nil
 
+gameElements = Array.new()
+ships = Array.new()
+moveable = Moveable.new() 
+
 @gameStatus = "Menu"
 $level = 1
 tick = 0
@@ -70,77 +74,87 @@ update do
     playButtonSound.stop
     player, enemies, scoreText, gameMusic = setGameScreen()
     hideMenu(gameName, gameEdition, @playButton, @exitButton, balloonIcon, balloonIcon2)
+    gameElements.push(player)
+    ships.push(player)
+    enemies.each do |enemy|
+      gameElements.push(enemy)
+      ships.push(enemy)
+    end
     @gameStatus = "Playing"
   elsif @gameStatus == "Playing"
     
     if tick % 1000 == 0
       masterEnemy = MasterInvader.new($windowW - 84, 18, 2, File.join(File.dirname(__FILE__), "../data/images/zeppelin4.png"))
       tick = 0
+      gameElements.push(masterEnemy)
+      ships.push(masterEnemy)
     end
     tick += 1
-    if masterEnemy != nil
-      masterEnemy.move
-      shot = masterEnemy.shoot
-      if shot != nil
-        shots.push(shot)
-      end
-      if !masterEnemy.insideScreen(masterEnemy.speed)
-        hide(masterEnemy.image)
-        masterEnemy = nil
-      end
-    end
-    player.move
-    shot = player.shoot
-    if shot != nil
-      shots.push(shot)
-    end
-    $playerMove = "None"
+    
     leftEnemy, rightEnemy = borderEnemies(enemies)
     if enemies[0].invaderDirection == "Right"
       enemies[rightEnemy].decideDirection()
     else
       enemies[leftEnemy].decideDirection()
     end
-    enemies.each do |enemy|
-      enemy.move
-      shot = enemy.shoot
+
+    gameElements.each do |element|
+      moveable.move(element)
+    end
+    ships.each do |ship|
+      shot = moveable.shoot(ship)
       if shot != nil
         shots.push(shot)
+        gameElements.push(shot)
       end
     end
-    shots.each do |shot|      
-      enemies.each do |enemy|
-        hit = shot.hitAShip(enemy.image, "Enemy")
-        if hit != nil
-          enemies.delete(enemy)
-          hide(enemy.image)
-          enemy = nil
-          player.score = player.score + 10*$level
-        end
+    
+  
+    if masterEnemy != nil
+      if !masterEnemy.insideScreen(masterEnemy.speed)
+        hide(masterEnemy.image)
+        ships.delete(masterEnemy)
+        gameElements.delete(masterEnemy)
+        masterEnemy = nil
       end
-      hit = shot.hitAShip(player.image, "Player")
-      if hit != nil
-          @gameStatus = "Over"
-      end
-      if masterEnemy != nil
-        hit = shot.hitAShip(masterEnemy.image, "Enemy")
+    end
+    $playerMove = "None"
+
+    shots.each do |shot|
+      ships.each do |ship|
+        hit = shot.hitAShip(ship.image, ship.class.name)
         if hit != nil
-          if masterEnemy.shield
-            masterEnemy.deactivateShield()
-          else
-            hide(masterEnemy.image)
-            masterEnemy = nil
-            player.score = player.score + 100*$level
+          case ship.class.name
+          when "Player"
+            hide(ship.image)
+            ships.delete(ship)
+            gameElements.delete(ship)
+            @gameStatus = "Over"
+          when "Invader"
+            hide(ship.image)
+            ships.delete(ship)
+            gameElements.delete(ship)
+            enemies.delete(ship)
+            player.score = player.score + 10*$level
+          when "MasterInvader"
+            if masterEnemy.shield == true
+              masterEnemy.deactivateShield
+            else
+              hide(ship.image)
+              ships.delete(ship)
+              gameElements.delete(ship)
+              masterEnemy = nil
+              player.score = player.score + 100*$level
+            end
           end
         end
-      end
-      
+      end 
     end
     shots.each do |shot|
-      shot.move()
       if shot.hitShip or !shot.insideScreen(shot.speed)
         shots.delete(shot)
         hide(shot.shape)
+        gameElements.delete(shot)
         shot = nil
       end
     end
@@ -153,6 +167,10 @@ update do
     end
   elsif @gameStatus == "Completed"
     enemies = refillEnemies
+    enemies.each do |enemy|
+      gameElements.push(enemy)
+      ships.push(enemy)
+    end
     $level = $level + 1
     @gameStatus = "Playing" 
   elsif @gameStatus == "Over"

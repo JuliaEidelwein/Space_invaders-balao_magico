@@ -66,7 +66,7 @@ class Enemy < Ship
 
   def shoot
     if shouldShoot(10 + 2*$level)
-      shot = Bullet.new((@x + (@image.width)/2), (@y + @image.height), "Enemy")
+      shot = Bullet.new((@x + (@image.width)/2), (@y + @image.height), self.class.name)
       return shot
     end
     return nil

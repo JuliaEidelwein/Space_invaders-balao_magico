@@ -20,7 +20,7 @@ class MasterInvader < Enemy
 
   def shoot
     if shouldShoot(200 + 2*$level)
-      shot = Bullet.new((@x + (@image.width)/2), (@y + @image.height), "Enemy")
+      shot = Bullet.new((@x + (@image.width)/2), (@y + @image.height), "MasterInvader")
       return shot
     end
     return nil

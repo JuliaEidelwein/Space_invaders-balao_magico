@@ -5,6 +5,10 @@ class Moveable
     moveableObject.move
   end
 
+  def shoot(moveableObject)
+    moveableObject.shoot
+  end
+
   def colliding(moveableObject)
     self.colliding(moveableObject)
   end
