@@ -105,6 +105,10 @@ end
 
 # Finds the Index of the enemies that are closer to left and right boundaries 
 def borderEnemies(enemies)
+  
+  if enemies.length == 1
+    return 0, 0
+  end
 
   leftEnemy = 0
   rightEnemy = 0
@@ -142,9 +146,10 @@ on :key_down do |e|
   elsif key.to_s == "right"
     $playerMove = "Right"
   elsif e.key == "space"
-    $playerMove = "space"
+    $playerShoot = true
   else
     $playerMove = "None"
+    $playerShoot = false
   end
 
 end
@@ -156,8 +161,6 @@ on :key_held do |e|
     $playerMove = "Left"
   elsif key.to_s == "right"
     $playerMove = "Right"
-  elsif e.key == "space"
-    $playerMove = "space"
   else
     $playerMove = "None"
   end

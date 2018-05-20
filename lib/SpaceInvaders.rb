@@ -25,6 +25,7 @@ balloonIcon2 = createBalloonIcon(40,40)
 gameMusic = nil
 player = nil
 enemies = nil
+shots = Array.new()
 
 @gameStatus = "Menu"
 tick = 0
@@ -63,15 +64,43 @@ update do
     @gameStatus = "Playing"
   elsif @gameStatus == "Playing"
     player.move
-    player.shoot
+    shot = player.shoot
+    if shot != nil
+      shots.push(shot)
+    end
     $playerMove = "None"
     leftEnemy, rightEnemy = borderEnemies(enemies)
-    enemies[leftEnemy].decideDirection()
-    enemies[rightEnemy].decideDirection()
+    if enemies[0].invaderDirection == "Right"
+      enemies[rightEnemy].decideDirection()
+    else
+      enemies[leftEnemy].decideDirection()
+    end
+    shots.each do |shot|      
+      enemies.each do |enemy|
+        hit = shot.hitAShip(enemy.image)
+        if hit != nil
+          enemies.delete(enemy)
+          hide(enemy.image)
+          enemy = nil
+        end
+      end
+    end
     enemies.each do |enemy|
       enemy.move
     end
-    enemies[0].timeToApproach = false
+    shots.each do |shot|
+      shot.move()
+      if shot.hitShip or !shot.insideScreen(shot.speed)
+        shots.delete(shot)
+        hide(shot.shape)
+        shot = nil
+      end
+    end
+    if enemies.length == 0
+      @gameStatus = "Completed"
+    else
+      enemies[0].timeToApproach = false
+    end
   end
 end
 show

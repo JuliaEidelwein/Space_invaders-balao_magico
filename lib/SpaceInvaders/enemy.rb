@@ -11,6 +11,10 @@ class Enemy < Ship
 
   end
 
+  def invaderDirection()
+    @@invaderDirection
+  end
+
   # Defines enemies direction based on current direction an screen boundary test 
   def decideDirection()
 

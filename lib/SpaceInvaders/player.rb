@@ -20,38 +20,33 @@ class Player < Ship
     @image.x = @x
   end
 
-  def check_colision(direction)
-    if direction == "Right"
-      if @x + 1 >= $windowW - @image.width
-        return false
-      else return true
-      end
-    elsif direction == "Left"
-      if @x - 1 <= 0
-        return false
-      else return true
-      end
+  # Screen boundary test with a given delta
+  def insideScreen(delta)
+    if $playerMove == "Right"
+      return (@x + @image.width + delta) < $windowW ? true : false
+    elsif $playerMove == "Left"
+      return (@x - delta) > 0 ? true : false
     end
   end
 
   def move()
     if $playerMove == "Right"
-      if check_colision("Right")
+      if insideScreen(@speed)
         moveRight @speed
       end
     elsif $playerMove == "Left"
-      if check_colision("Left")
+      if insideScreen(@speed)
         moveLeft @speed
       end
     end
   end
 
   def shoot
-    if $playerMove == "space"
-      shot = Bullet.new(@x,@y)
-      while shot.y_position > 0 do
-        shot.move(0.1)
-      end
+    if $playerShoot
+      shot = Bullet.new((@x + (@image.width)/2), @y)
+      $playerShoot = false
+      return shot
     end
+    return nil
   end
 end
