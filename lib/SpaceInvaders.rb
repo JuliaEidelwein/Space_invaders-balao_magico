@@ -28,20 +28,20 @@ enemies = nil
 masterEnemy = nil
 scoreText = nil
 shots = Array.new()
-
-alertScreen = nil
-gameOverText = nil
-finalScoreText = nil
-@returnButton = nil
-
 gameElements = Array.new()
 ships = Array.new()
 moveable = Moveable.new() 
+
+
+@returnButton = nil
 
 @gameStatus = "Menu"
 $level = 1
 tick = 0
 wasMouseOver = false
+
+
+
 update do
   if @gameStatus == "Menu"
 
@@ -81,10 +81,12 @@ update do
       ships.push(enemy)
     end
     @gameStatus = "Playing"
+
+    
   elsif @gameStatus == "Playing"
     
     if tick % 1000 == 0
-      masterEnemy = MasterInvader.new($windowW - 84, 18, 2, File.join(File.dirname(__FILE__), "../data/images/zeppelin4.png"))
+      masterEnemy = MasterInvader.new($windowW - 84, 18, File.join(File.dirname(__FILE__), "../data/images/zeppelin4.png"), 2)
       tick = 0
       gameElements.push(masterEnemy)
       ships.push(masterEnemy)
@@ -92,25 +94,28 @@ update do
     tick += 1
     
     leftEnemy, rightEnemy = borderEnemies(enemies)
-    if enemies[0].invaderDirection == "Right"
+    
+    if enemies[0].invaderDirection == :right
       enemies[rightEnemy].decideDirection()
     else
       enemies[leftEnemy].decideDirection()
     end
 
+    ## Moving Elements
     gameElements.each do |element|
       moveable.move(element)
     end
-    ships.each do |ship|
-      shot = moveable.shoot(ship)
-      if shot != nil
-        shots.push(shot)
-        gameElements.push(shot)
-      end
+
+  ships.each do |ship|
+    shot = moveable.shoot(ship)
+    if shot != nil
+      shots.push(shot)
+      gameElements.push(shot)
     end
+  end
     
   
-    if masterEnemy != nil
+  if masterEnemy != nil
       if !masterEnemy.insideScreen(masterEnemy.speed)
         hide(masterEnemy.image)
         ships.delete(masterEnemy)
@@ -118,25 +123,27 @@ update do
         masterEnemy = nil
       end
     end
-    $playerMove = "None"
+    
+    $playerMove = :none
 
     shots.each do |shot|
+      
       ships.each do |ship|
-        hit = shot.hitAShip(ship.image, ship.class.name)
+        hit = shot.hitAShip(ship.image, ship.class.name.to_sym)
         if hit != nil
-          case ship.class.name
-          when "Player"
+          case ship.class.name.to_sym
+          when :Player
             hide(ship.image)
             ships.delete(ship)
             gameElements.delete(ship)
             @gameStatus = "Over"
-          when "Invader"
+          when :Invader
             hide(ship.image)
             ships.delete(ship)
             gameElements.delete(ship)
             enemies.delete(ship)
             player.score = player.score + 10*$level
-          when "MasterInvader"
+          when :MasterInvader
             if masterEnemy.shield == true
               masterEnemy.deactivateShield
             else
@@ -150,6 +157,7 @@ update do
         end
       end 
     end
+    
     shots.each do |shot|
       if shot.hitShip or !shot.insideScreen(shot.speed)
         shots.delete(shot)

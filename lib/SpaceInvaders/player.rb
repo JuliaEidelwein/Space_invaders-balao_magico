@@ -13,11 +13,13 @@ class Player < Ship
     @score = 0
   end
 
+  # Moves right "distance" pixels
   def moveRight(distance)
     @x = @x + distance
     @image.x = @x
   end
 
+  # Moves left "distance" pixels
   def moveLeft(distance)
     @x = @x - distance
     @image.x = @x
@@ -25,31 +27,33 @@ class Player < Ship
 
   # Screen boundary test with a given delta
   def insideScreen(delta)
-    if $playerMove == "Right"
-      return (@x + @image.width + delta) < $windowW ? true : false
-    elsif $playerMove == "Left"
-      return (@x - delta) > 0 ? true : false
+    if $playerMove == :right
+      (@x + @image.width + delta) < $windowW
+      
+    elsif $playerMove == :left
+      (@x - delta) > 0
     end
   end
 
   def move()
-    if $playerMove == "Right"
+    if $playerMove == :right
       if insideScreen(@speed)
-        moveRight @speed
+        moveRight(@speed)
       end
-    elsif $playerMove == "Left"
+    elsif $playerMove == :left
       if insideScreen(@speed)
-        moveLeft @speed
+        moveLeft(@speed)
       end
+    else
+      self
     end
   end
 
   def shoot
     if $playerShoot
-      shot = Bullet.new((@x + (@image.width)/2), @y - 3, "Player")
       $playerShoot = false
-      return shot
+      Bullet.new((@x + (@image.width)/2), @y - 3, self.class.name.to_sym)
     end
-    return nil
   end
+
 end

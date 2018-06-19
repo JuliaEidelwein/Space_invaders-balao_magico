@@ -36,10 +36,8 @@ end
 
 # This funciton hides an object by placing it outside the screen 
 def hide(object)
-
   object.x = $windowW
   return object
-
 end
 
 # Hide funtion applied to all elements of Game Menu
@@ -127,7 +125,7 @@ def refillEnemies()
       enemies[i] = Invader.new((20 + (i-16)*46), 130, 1, File.join(File.dirname(__FILE__), "../../data/images/balloon13.png"))
     end
 
-  end
+ end
 
   return enemies
 
@@ -218,16 +216,14 @@ end
 
 # Keyboard events, both define player's direction based on the pressed key
 on :key_down do |e|
-
-  key = e.key
-  if key.to_s == "left"
-    $playerMove = "Left"
-  elsif key.to_s == "right"
-    $playerMove = "Right"
-  elsif e.key == "space"
+  if e.key.to_sym == :left
+    $playerMove = :left
+  elsif e.key.to_sym == :right
+    $playerMove = :right
+  elsif e.key.to_sym == :space
     $playerShoot = true
   else
-    $playerMove = "None"
+    $playerMove = :none
     $playerShoot = false
   end
 
@@ -235,13 +231,12 @@ end
 
 on :key_held do |e|
 
-  key = e.key
-  if key.to_s == "left"
-    $playerMove = "Left"
-  elsif key.to_s == "right"
-    $playerMove = "Right"
+  if e.key.to_sym == :left
+    $playerMove = :left
+  elsif e.key.to_sym == :right
+    $playerMove = :right
   else
-    $playerMove = "None"
+    $playerMove = :none
   end
 
 end

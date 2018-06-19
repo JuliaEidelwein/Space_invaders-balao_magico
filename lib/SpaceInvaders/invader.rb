@@ -1,53 +1,37 @@
 require_relative './enemy.rb'
 class Invader < Enemy
 
-  @@invaderDirection = "Right"
   @@timeToApproach = false # Stores information about whether Invaders should approach the screen bottom or not
-  
 
   def initialize(x, y, speed = 10, path)
-    @x = x
-    @y = y
-    @speed = speed
-    @image = Image.new(path: path, height: 50, width: 45, x: x, y: y)
+    super(x,y,speed,path)
   end
-
+  
   # Setter for timeToApproach 
-  def timeToApproach= (value)
-    @@timeToApproach = value
+  def timeToApproach=(boolean)
+    boolean
   end
-
+  
   def moveDown()
     @y = @y + 10 + $level
     @image.y = @y
   end
 
-  def decideDirection()
-    if @@invaderDirection == "Right"
-      if !insideScreen(@speed)
-        @@invaderDirection = "Left"
-        @@timeToApproach = true
-      end
-    elsif @@invaderDirection == "Left"
-      if !insideScreen(@speed)
-        @@invaderDirection = "Right"
-        @@timeToApproach = true
-      end 
-    end
+  def invaderDirection()
+    @@invaderDirection
   end
 
   def move()
-    if @@invaderDirection == "Right"
+    if @@invaderDirection == :right
       if @@timeToApproach
-        moveDown
+        moveDown().moveRight(@speed)
+      else
+        moveRight(@speed)
       end
-      moveRight(@speed)
+    elsif @@timeToApproach
+      moveDown().moveLeft(@speed)
     else
-      if @@timeToApproach
-        moveDown
-      end
       moveLeft(@speed)
     end
   end
-
 end
